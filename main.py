@@ -6,26 +6,42 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/articulos')
 def articulos():
-    articulos = bbdd.listar_articulos()
-    return render_template('articulos.html', articulos= articulos)
+    try:
+        articulos = bbdd.listar_articulos()
+    except Exception as e:
+        print(f"Ha ocurrido un error {e}")
+    finally:
+        return render_template('articulos.html', articulos= articulos)
 
 @app.route('/eliminar_articulo', methods = ['POST'])
 def eliminar_articulo():
-    bbdd.eliminar_articulo(request.form['id'])
-    return redirect('/articulos')
+    try:
+        bbdd.eliminar_articulo(request.form['id'])
+    except Exception as e:
+        print(f"Ha ocurrido un error {e}")
+    finally:
+        return redirect('/articulos')
 
 @app.route('/editar_articulo/<int:id>')
 def editar_articulo(id):
-    articulo = bbdd.get_articulo(id)
-    return render_template("editar_articulo.html", articulo = articulo)
+    try:
+        articulo = bbdd.get_articulo(id)
+    except Exception as e:
+        print(f"Ha ocurrido un error {e}")
+    finally:
+        return render_template("editar_articulo.html", articulo = articulo)
 
 @app.route('/actualizar_articulo', methods= ['POST'])
 def actualizar_articulo():
     id = request.form['id']
     nombre = request.form['nombre']
     precio = request.form['precio']
-    bbdd.actualizar_articulo(id, nombre, precio)
-    return redirect('/articulos')
+    try:
+        bbdd.actualizar_articulo(id, nombre, precio)
+    except Exception as e:
+        print(f"Ha ocurrido el error {e}")
+    finally:
+        return redirect('/articulos')
 
 @app.route('/agregar_articulo')
 def agregar_articulo():
@@ -35,8 +51,12 @@ def agregar_articulo():
 def guardar_articulo():
     nombre =  request.form['nombre']
     precio = request.form['precio']
-    bbdd.insertar_articulo(nombre, precio)
-    return redirect('/articulos')
+    try:
+        bbdd.insertar_articulo(nombre, precio)
+    except Exception as e:
+        print(f"Ha ocurrido un error {e}")
+    finally:
+        return redirect('/articulos')
 
 if __name__ == '__main__':
     app.run(debug= True, port= 3030)

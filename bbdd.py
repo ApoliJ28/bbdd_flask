@@ -9,13 +9,16 @@ def get_conn():
     )
 
 def insertar_articulo(nombre, precio):
-    conn = get_conn()
+    try:
+        conn = get_conn()
+        with conn.cursor() as cursor:
+            cursor.execute(f"INSERT INTO articulos (nombre, precio)  VALUES ('{nombre}', '{precio}');")
+            conn.commit()
+            cursor.close()
+        conn.close()
+    except Exception as e:
+        print(f"Error de conexión {e}")
     
-    with conn.cursor() as cursor:
-        cursor.execute(f"INSERT INTO articulos (nombre, precio)  VALUES ('{nombre}', '{precio}');")
-        conn.commit()
-        cursor.close()
-    conn.close()
 
 def listar_articulos():
     conn = get_conn()
